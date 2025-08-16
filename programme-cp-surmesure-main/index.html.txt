@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Programme CP Sur-Mesure</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        /* Styles custom pour un look enfantin */
+        .kid-font { font-family: 'Comic Sans MS', cursive, sans-serif; }
+        .gradient-bg { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .card-shadow { box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        .loading-spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-blue-50 to-purple-50 min-h-screen">
+    
+    <!-- Header -->
+    <header class="gradient-bg text-white py-8">
+        <div class="container mx-auto px-4 text-center">
+            <h1 class="text-4xl font-bold kid-font mb-2">📚 Programme CP Sur-Mesure</h1>
+            <p class="text-xl opacity-90">Fini les cahiers de vacances génériques !</p>
+            <p class="text-lg opacity-80">Un programme personnalisé pour votre enfant en 5 minutes</p>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8">
+        
+        <!-- Promesse -->
+        <div class="bg-white rounded-xl p-6 mb-8 card-shadow">
+            <div class="text-center">
+                <h2 class="text-2xl font-bold text-gray-800 mb-4">✨ Notre Promesse</h2>
+                <div class="grid md:grid-cols-3 gap-6">
+                    <div class="text-center">
+                        <div class="text-4xl mb-2">🎯</div>
+                        <h3 class="font-semibold text-gray-700">Adapté au niveau réel</h3>
+                        <p class="text-sm text-gray-600">Conforme aux programmes 2025</p>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-4xl mb-2">❤️</div>
+                        <h3 class="font-semibold text-gray-700">Basé sur ses passions</h3>
+                        <p class="text-sm text-gray-600">Animaux, super-héros, princesses...</p>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-4xl mb-2">⏱️</div>
+                        <h3 class="font-semibold text-gray-700">Respecte son attention</h3>
+                        <p class="text-sm text-gray-600">Sessions adaptées à sa concentration</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Questionnaire -->
+        <div id="questionnaire" class="bg-white rounded-xl p-8 card-shadow">
+            <h2 class="text-3xl font-bold text-center text-gray-800 mb-8 kid-font">
+                🔍 Parlez-nous de votre enfant
+            </h2>
+            
+            <form id="programForm" class="space-y-8">
+                
+                <!-- Question 1: Niveau -->
+                <div class="space-y-4">
+                    <label class="block text-lg font-semibold text-gray-700">
+                        📊 Quel est son niveau actuel en CP ?
+                    </label>
+                    <div class="grid md:grid-cols-3 gap-4">
+                        <label class="cursor-pointer">
+                            <input type="radio" name="niveau" value="1" class="sr-only peer">
+                            <div class="border-2 border-gray-200 rounded-lg p-4 text-center peer-checked:border-blue-500 peer-checked:bg-blue-50 hover:bg-gray-50">
+                                <div class="text-2xl mb-2">🌱</div>
+                                <h4 class="font-semibold">Début d'année</h4>
+                                <p class="text-sm text-gray-600">Septembre - Octobre</p>
+                            </div>
+                        </label>
+                        <label class="cursor-pointer">
+                            <input type="radio" name="niveau" value="2" class="sr-only peer">
+                            <div class="border-2 border-gray-200 rounded-lg p-4 text-center peer-checked:border-blue-500 peer-checked:bg-blue-50 hover:bg-gray-50">
+                                <div class="text-2xl mb-2">🌿</div>
+                                <h4 class="font-semibold">Milieu d'année</h4>
+                                <p class="text-sm text-gray-600">Novembre - Mars</p>
+                            </div>
+                        </label>
+                        <label class="cursor-pointer">
+                            <input type="radio" name="niveau" value="3" class="sr-only peer">
+                            <div class="border-2 border-gray-200 rounded-lg p-4 text-center peer-checked:border-blue-500 peer-checked:bg-blue-50 hover:bg-gray-50">
+                                <div class="text-2xl mb-2">🌳</div>
+                                <h4 class="font-semibold">Fin d'année</h4>
+                                <p class="text-sm text-gray-600">Avril - Juin</p>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Question 2: Attention -->
+                <div class="space-y-4">
+                    <label class="block text-lg font-semibold text-gray-700">
+                        ⏰ Quelle est sa capacité d'attention ?
+                    </label>
+                    <div class="grid md:grid-cols-3 gap-4">
+                        <label class="cursor-pointer">
+                            <input type="radio" name="attention" value="15" class="sr-only peer">
+                            <div class="border-2 border-gray-200 rounded-lg p-4 text-center peer-checked:border-green-500 peer-checked:bg-green-50 hover:bg-gray-50">
+                                <div class="text-2xl mb-2">⚡</div>
+                                <h4 class="font-semibold">Courte</h4>
+                                <p class="text-sm text-gray-600">15 minutes max</p>
+                            </div>
+                        </label>
+                        <label class="cursor-pointer">
+                            <input type="radio" name="attention" value="30" class="sr-only peer">
+                            <div class="border-2 border-gray-200 rounded-lg p-4 text-center peer-checked:border-green-500 peer-checked:bg-green-50 hover:bg-gray-50">
+                                <div class="text-2xl mb-2">⚖️</div>
+                                <h4 class="font-semibold">Moyenne</h4>
+                                <p class="text-sm text-gray-600">30 minutes max</p>
+                            </div>
+                        </label>
+                        <label class="cursor-pointer">
+                            <input type="radio" name="attention" value="45" class="sr-only peer">
+                            <div class="border-2 border-gray-200 rounded-lg p-4 text-center peer-checked:border-green-500 peer-checked:bg-green-50 hover:bg-gray-50">
+                                <div class="text-2xl mb-2">🎯</div>
+                                <h4 class="font-semibold">Longue</h4>
+                                <p class="text-sm text-gray-600">45 minutes max</p>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Question 3: Matière -->
+                <div class="space-y-4">
+                    <label class="block text-lg font-semibold text-gray-700">
+                        📖 Quelle matière prioriser ?
+                    </label>
+                    <div class="grid md:grid-cols-3 gap-4">
+                        <label class="cursor-pointer">
+                            <input type="radio" name="matiere" value="maths" class="sr-only peer">
+                            <div class="border-2 border-gray-200 rounded-lg p-4 text-center peer-checked:border-purple-500 peer-checked:bg-purple-50 hover:bg-gray-50">
+                                <div class="text-2xl mb-2">🔢</div>
+                                <h4 class="font-semibold">Maths</h4>
+                                <p class="text-sm text-gray-600">Calcul et nombres</p>
+                            </div>
+                        </label>
+                        <label class="cursor-pointer">
+                            <input type="radio" name="matiere" value="français" class="sr-only peer">
+                            <div class="border-2 border-gray-200 rounded-lg p-4 text-center peer-checked:border-purple-500 peer-checked:bg-purple-50 hover:bg-gray-50">
+                                <div class="text-2xl mb-2">📚</div>
+                                <h4 class="font-semibold">Français</h4>
+                                <p class="text-sm text-gray-600">Lecture et écriture</p>
+                            </div>
+                        </label>
+                        <label class="cursor-pointer">
+                            <input type="radio" name="matiere" value="les deux" class="sr-only peer">
+                            <div class="border-2 border-gray-200 rounded-lg p-4 text-center peer-checked:border-purple-500 peer-checked:bg-purple-50 hover:bg-gray-50">
+                                <div class="text-2xl mb-2">⚖️</div>
+                                <h4 class="font-semibold">Les deux</h4>
+                                <p class="text-sm text-gray-600">Équilibré</p>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Question 4: Passion -->
+                <div class="space-y-4">
+                    <label class="block text-lg font-semibold text-gray-700">
+                        ❤️ Qu'est-ce qui le passionne ?
+                    </label>
+                    <div class="grid md:grid-cols-3 gap-4">
+                        <label class="cursor-pointer">
+                            <input type="radio" name="passion" value="animaux" class="sr-only peer">
+                            <div class="border-2 border-gray-200 rounded-lg p-4 text-center peer-checked:border-orange-500 peer-checked:bg-orange-50 hover:bg-gray-50">
+                                <div class="text-2xl mb-2">🐾</div>
+                                <h4 class="font-semibold">Animaux</h4>
+                                <p class="text-sm text-gray-600">Ferme, savane, océan...</p>
+                            </div>
+                        </label>
+                        <label class="cursor-pointer">
+                            <input type="radio" name="passion" value="superheros" class="sr-only peer">
+                            <div class="border-2 border-gray-200 rounded-lg p-4 text-center peer-checked:border-orange-500 peer-checked:bg-orange-50 hover:bg-gray-50">
+                                <div class="text-2xl mb-2">🦸</div>
+                                <h4 class="font-semibold">Super-héros</h4>
+                                <p class="text-sm text-gray-600">Aventures et pouvoirs</p>
+                            </div>
+                        </label>
+                        <label class="cursor-pointer">
+                            <input type="radio" name="passion" value="princesses" class="sr-only peer">
+                            <div class="border-2 border-gray-200 rounded-lg p-4 text-center peer-checked:border-orange-500 peer-checked:bg-orange-50 hover:bg-gray-50">
+                                <div class="text-2xl mb-2">👑</div>
+                                <h4 class="font-semibold">Princesses</h4>
+                                <p class="text-sm text-gray-600">Châteaux et magie</p>
+                            </div>
+                        </label>
+                        <label class="cursor-pointer">
+                            <input type="radio" name="passion" value="voitures" class="sr-only peer">
+                            <div class="border-2 border-gray-200 rounded-lg p-4 text-center peer-checked:border-orange-500 peer-checked:bg-orange-50 hover:bg-gray-50">
+                                <div class="text-2xl mb-2">🚗</div>
+                                <h4 class="font-semibold">Voitures</h4>
+                                <p class="text-sm text-gray-600">Transports et véhicules</p>
+                            </div>
+                        </label>
+                        <label class="cursor-pointer">
+                            <input type="radio" name="passion" value="sport" class="sr-only peer">
+                            <div class="border-2 border-gray-200 rounded-lg p-4 text-center peer-checked:border-orange-500 peer-checked:bg-orange-50 hover:bg-gray-50">
+                                <div class="text-2xl mb-2">⚽</div>
+                                <h4 class="font-semibold">Sport</h4>
+                                <p class="text-sm text-gray-600">Jeux et compétitions</p>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Question 5: Durée -->
+                <div class="space-y-4">
+                    <label class="block text-lg font-semibold text-gray-700">
+                        📅 Pour quelle durée ?
+                    </label>
+                    <div class="grid md:grid-cols-4 gap-4">
+                        <label class="cursor-pointer">
+                            <input type="radio" name="duree" value="week-end" class="sr-only peer">
+                            <div class="border-2 border-gray-200 rounded-lg p-4 text-center peer-checked:border-red-500 peer-checked:bg-red-50 hover:bg-gray-50">
+                                <div class="text-2xl mb-2">📆</div>
+                                <h4 class="font-semibold">Week-end</h4>
+                                <p class="text-sm text-gray-600">2-3 jours</p>
+                            </div>
+                        </label>
+                        <label class="cursor-pointer">
+                            <input type="radio" name="duree" value="1 semaine" class="sr-only peer">
+                            <div class="border-2 border-gray-200 rounded-lg p-4 text-center peer-checked:border-red-500 peer-checked:bg-red-50 hover:bg-gray-50">
+                                <div class="text-2xl mb-2">📅</div>
+                                <h4 class="font-semibold">1 semaine</h4>
+                                <p class="text-sm text-gray-600">7 jours</p>
+                            </div>
+                        </label>
+                        <label class="cursor-pointer">
+                            <input type="radio" name="duree" value="2 semaines" class="sr-only peer">
+                            <div class="border-2 border-gray-200 rounded-lg p-4 text-center peer-checked:border-red-500 peer-checked:bg-red-50 hover:bg-gray-50">
+                                <div class="text-2xl mb-2">📋</div>
+                                <h4 class="font-semibold">2 semaines</h4>
+                                <p class="text-sm text-gray-600">Petites vacances</p>
+                            </div>
+                        </label>
+                        <label class="cursor-pointer">
+                            <input type="radio" name="duree" value="1 mois" class="sr-only peer">
+                            <div class="border-2 border-gray-200 rounded-lg p-4 text-center peer-checked:border-red-500 peer-checked:bg-red-50 hover:bg-gray-50">
+                                <div class="text-2xl mb-2">📖</div>
+                                <h4 class="font-semibold">1 mois</h4>
+                                <p class="text-sm text-gray-600">Grandes vacances</p>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Bouton génération -->
+                <div class="text-center pt-8">
+                    <button type="submit" id="generateBtn" class="bg-gradient-to-r from-green-500 to-blue-500 text-white px-8 py-4 rounded-xl text-xl font-bold hover:from-green-600 hover:to-blue-600 transform hover:scale-105 transition-all duration-200 shadow-lg">
+                        ✨ Créer mon programme personnalisé ✨
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Loading -->
+        <div id="loading" class="hidden bg-white rounded-xl p-8 card-shadow text-center">
+            <div class="loading-spinner mx-auto mb-4"></div>
+            <h3 class="text-xl font-semibold text-gray-700 mb-2">🎨 Création en cours...</h3>
+            <p class="text-gray-600">Nous préparons un programme sur-mesure pour votre enfant</p>
+        </div>
+
+        <!-- Résultat -->
+        <div id="result" class="hidden bg-white rounded-xl p-8 card-shadow">
+            <div class="text-center mb-6">
+                <h2 class="text-2xl font-bold text-gray-800 mb-2">🎉 Votre programme est prêt !</h2>
+                <button id="downloadBtn" class="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-6 py-3 rounded-lg font-semibold hover:from-purple-600 hover:to-pink-600 transition-all duration-200">
+                    📄 Télécharger le PDF
+                </button>
+            </div>
+            <div id="programContent" class="prose max-w-none bg-gray-50 p-6 rounded-lg"></div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-6 mt-12">
+        <div class="container mx-auto px-4 text-center">
+            <p>&copy; 2025 Programme CP Sur-Mesure - Conforme aux programmes 2025</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

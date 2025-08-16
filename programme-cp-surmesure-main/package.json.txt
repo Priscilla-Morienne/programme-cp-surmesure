@@ -1,0 +1,29 @@
+{
+  "name": "generateur-programme-cp",
+  "version": "1.0.0",
+  "description": "Générateur de programmes de révision personnalisés pour CP",
+  "main": "index.js",
+  "scripts": {
+    "dev": "netlify dev",
+    "build": "echo 'No build step needed'",
+    "deploy": "netlify deploy --prod"
+  },
+  "keywords": [
+    "education",
+    "CP",
+    "revision",
+    "enfants",
+    "personnalise"
+  ],
+  "author": "Votre nom",
+  "license": "MIT",
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.24.3"
+  },
+  "devDependencies": {
+    "netlify-cli": "^17.0.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
