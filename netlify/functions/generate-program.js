@@ -1,5 +1,4 @@
 exports.handler = async (event, context) => {
-  // Headers CORS
   const headers = {
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Headers': 'Content-Type',
@@ -7,12 +6,10 @@ exports.handler = async (event, context) => {
     'Content-Type': 'application/json'
   };
 
-  // Gestion CORS preflight
   if (event.httpMethod === 'OPTIONS') {
     return { statusCode: 200, headers, body: '' };
   }
 
-  // Test basique d'abord
   if (event.httpMethod !== 'POST') {
     return {
       statusCode: 405,
@@ -22,11 +19,9 @@ exports.handler = async (event, context) => {
   }
 
   try {
-    // Test 1: vérifier qu'on reçoit les données
     const body = JSON.parse(event.body);
     console.log('Données reçues:', body);
 
-    // Test 2: vérifier la clé API
     const apiKey = process.env.CLAUDE_API_KEY;
     if (!apiKey) {
       return {
@@ -36,9 +31,6 @@ exports.handler = async (event, context) => {
       };
     }
 
-    console.log('Clé API présente:', apiKey ? 'OUI' : 'NON');
-
-    // Test 3: appel Claude simplifié
     const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {
@@ -58,7 +50,6 @@ exports.handler = async (event, context) => {
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error('Erreur Claude:', errorText);
       return {
         statusCode: 500,
         headers,
@@ -81,7 +72,6 @@ exports.handler = async (event, context) => {
     };
 
   } catch (error) {
-    console.error('Erreur complète:', error);
     return {
       statusCode: 500,
       headers,
