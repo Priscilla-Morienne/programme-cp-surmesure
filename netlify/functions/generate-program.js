@@ -1,10 +1,5 @@
-const { Anthropic } = require('@anthropic-ai/sdk');
-
-const anthropic = new Anthropic({
-  apiKey: process.env.CLAUDE_API_KEY,
-});
-
 exports.handler = async (event, context) => {
+  // Headers CORS
   const headers = {
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Headers': 'Content-Type',
@@ -12,10 +7,12 @@ exports.handler = async (event, context) => {
     'Content-Type': 'application/json'
   };
 
+  // Gestion CORS preflight
   if (event.httpMethod === 'OPTIONS') {
     return { statusCode: 200, headers, body: '' };
   }
 
+  // Test basique d'abord
   if (event.httpMethod !== 'POST') {
     return {
       statusCode: 405,
@@ -25,101 +22,73 @@ exports.handler = async (event, context) => {
   }
 
   try {
-    const { niveau, attention, matiere, passion, duree } = JSON.parse(event.body);
+    // Test 1: vérifier qu'on reçoit les données
+    const body = JSON.parse(event.body);
+    console.log('Données reçues:', body);
 
-    if (!niveau || !attention || !matiere || !passion || !duree) {
+    // Test 2: vérifier la clé API
+    const apiKey = process.env.CLAUDE_API_KEY;
+    if (!apiKey) {
       return {
-        statusCode: 400,
+        statusCode: 500,
         headers,
-        body: JSON.stringify({ error: 'Données manquantes' })
+        body: JSON.stringify({ error: 'Clé API manquante' })
       };
     }
 
-    const prompt = buildPrompt(niveau, attention, matiere, passion, duree);
+    console.log('Clé API présente:', apiKey ? 'OUI' : 'NON');
 
-    const message = await anthropic.messages.create({
-      model: 'claude-3-sonnet-20240229',
-      max_tokens: 4000,
-      messages: [{ role: 'user', content: prompt }]
+    // Test 3: appel Claude simplifié
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey,
+        'anthropic-version': '2023-06-01'
+      },
+      body: JSON.stringify({
+        model: 'claude-3-sonnet-20240229',
+        max_tokens: 1000,
+        messages: [{
+          role: 'user',
+          content: 'Génère un simple programme de révision CP de 2 jours sur les animaux'
+        }]
+      })
     });
 
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error('Erreur Claude:', errorText);
+      return {
+        statusCode: 500,
+        headers,
+        body: JSON.stringify({ 
+          error: 'Erreur Claude API', 
+          details: errorText 
+        })
+      };
+    }
+
+    const claudeData = await response.json();
+    
     return {
       statusCode: 200,
       headers,
-      body: JSON.stringify({ 
-        success: true, 
-        content: message.content[0].text 
+      body: JSON.stringify({
+        success: true,
+        content: claudeData.content[0].text
       })
     };
 
   } catch (error) {
-    console.error('Erreur:', error);
+    console.error('Erreur complète:', error);
     return {
       statusCode: 500,
       headers,
-      body: JSON.stringify({ 
-        error: 'Erreur lors de la génération du programme',
-        details: error.message 
+      body: JSON.stringify({
+        error: 'Erreur serveur',
+        details: error.message
       })
     };
   }
 };
-
-function buildPrompt(niveau, attention, matiere, passion, duree) {
-  const niveauMap = {
-    '1': 'début d\'année (septembre-octobre), nombres jusqu\'à 30, syllabes simples',
-    '2': 'milieu d\'année (novembre-mars), nombres jusqu\'à 50-60, textes documentaires simples',
-    '3': 'fin d\'année (avril-juin), nombres jusqu\'à 100, préparation CE1'
-  };
-
-  const attentionMap = {
-    '15': '15 minutes maximum par activité',
-    '30': '30 minutes maximum (15 min lecture + 15 min maths)',
-    '45': '45 minutes maximum (20 min lecture + 25 min maths)'
-  };
-
-  const passionMap = {
-    'animaux': 'les animaux (ferme, savane, océan, forêt)',
-    'superheros': 'les super-héros et aventures',
-    'princesses': 'les princesses et châteaux',
-    'voitures': 'les voitures et transports',
-    'sport': 'le sport et les jeux'
-  };
-
-  return `
-Crée un programme de révision pour enfant CP ${niveauMap[niveau]}.
-
-PARAMÈTRES :
-- Durée : ${duree}
-- Attention : ${attentionMap[attention]}
-- Matière focus : ${matiere}
-- Thème passion : ${passionMap[passion]}
-
-CONTRAINTES IMPORTANTES :
-- Style authentique de manuel scolaire (phrases courtes, vocabulaire précis, pas d'adjectifs forcés)
-- Conforme aux programmes 2025 (nombres selon niveau, lecture adaptée)
-- Include systématiquement des descriptions d'illustrations : [Image : description]
-- Ajoute des rappels pédagogiques avant chaque exercice de maths
-- Questions de compréhension pour chaque texte
-- Format prêt à imprimer en PDF
-
-STYLE LECTURE :
-- Textes documentaires simples
-- Phrases courtes et directes
-- Information factuelle (pas de conte)
-- Vocabulaire adapté au niveau
-
-STYLE MATHS :
-- Rappel de la notion avec exemple concret avant exercice
-- Manipulations visuelles décrites
-- Progression logique
-- Exercices variés
-
-STRUCTURE DEMANDÉE :
-- Programme jour par jour
-- Alternance lecture/maths
-- Conseils pour les parents
-- Activité créative bonus
-
-Génère le programme complet au format markdown avec tous les détails.`;
-}
